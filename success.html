@@ -1,0 +1,302 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>LoanEase - Application Status</title><style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#0057B8,#16A34A);
+  padding:20px;
+}
+
+.container{
+  width:100%;
+  max-width:520px;
+  margin:30px auto;
+  background:#fff;
+  border-radius:20px;
+  padding:28px 22px;
+  box-shadow:0 12px 35px rgba(0,0,0,0.22);
+}
+
+.logo{
+  text-align:center;
+  font-size:32px;
+  font-weight:bold;
+  color:#0057B8;
+  margin-bottom:20px;
+}
+
+.logo span{
+  color:#16A34A;
+}
+
+.success-icon{
+  width:70px;
+  height:70px;
+  margin:0 auto 15px;
+  border-radius:50%;
+  background:#16A34A;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:38px;
+  font-weight:bold;
+}
+
+h1{
+  text-align:center;
+  color:#222;
+  font-size:24px;
+  margin-bottom:10px;
+}
+
+.intro{
+  text-align:center;
+  color:#666;
+  line-height:1.5;
+  margin-bottom:22px;
+}
+
+.tracking-box{
+  background:#f3f7fb;
+  border-radius:12px;
+  padding:18px;
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.tracking-box p{
+  color:#666;
+  font-size:14px;
+  margin-bottom:8px;
+}
+
+.tracking-number{
+  color:#0057B8;
+  font-size:22px;
+  font-weight:bold;
+  letter-spacing:1px;
+}
+
+h2{
+  color:#222;
+  font-size:19px;
+  margin-bottom:18px;
+}
+
+.status{
+  position:relative;
+  padding-left:42px;
+  padding-bottom:25px;
+}
+
+.status:last-child{
+  padding-bottom:0;
+}
+
+.status::before{
+  content:"";
+  position:absolute;
+  left:10px;
+  top:3px;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:#ccc;
+  border:3px solid #fff;
+  box-shadow:0 0 0 2px #ccc;
+  z-index:2;
+}
+
+.status::after{
+  content:"";
+  position:absolute;
+  left:18px;
+  top:23px;
+  width:2px;
+  height:calc(100% - 5px);
+  background:#ddd;
+}
+
+.status:last-child::after{
+  display:none;
+}
+
+.status.completed::before{
+  background:#16A34A;
+  box-shadow:0 0 0 2px #16A34A;
+}
+
+.status.completed::after{
+  background:#16A34A;
+}
+
+.status.current::before{
+  background:#0057B8;
+  box-shadow:0 0 0 2px #0057B8;
+}
+
+.status-title{
+  font-weight:bold;
+  color:#333;
+  margin-bottom:4px;
+}
+
+.status-text{
+  color:#777;
+  font-size:13px;
+  line-height:1.4;
+}
+
+.note{
+  margin-top:25px;
+  padding:14px;
+  border-radius:10px;
+  background:#fff8e1;
+  color:#665500;
+  font-size:13px;
+  line-height:1.5;
+}
+
+.home-btn{
+  display:block;
+  width:100%;
+  margin-top:22px;
+  padding:14px;
+  border-radius:9px;
+  background:#0057B8;
+  color:white;
+  text-decoration:none;
+  text-align:center;
+  font-weight:bold;
+}
+
+</style></head><body><div class="container">  <div class="logo">
+    Loan<span>Ease</span>
+  </div>  <div class="success-icon">
+    ✓
+  </div>  <h1>
+    Application Received Successfully
+  </h1>  <p class="intro">
+    Your loan application has been received.
+    Keep your tracking number so you can check
+    your application status later.
+  </p>  <div class="tracking-box"><p>Your Tracking Number</p>
+
+<div class="tracking-number" id="trackingNumber">
+  Generating...
+</div>
+
+  </div>  <h2>
+    Loan Tracking Report
+  </h2>  <div class="status completed"><div class="status-title">
+  Application Received
+</div>
+
+<div class="status-text">
+  Your loan request has been successfully submitted.
+</div>
+
+  </div>  <div class="status current"><div class="status-title">
+  Pending Review
+</div>
+
+<div class="status-text">
+  Your application is waiting for review.
+</div>
+
+  </div>  <div class="status"><div class="status-title">
+  Approved
+</div>
+
+<div class="status-text">
+  Your application will show here if approved.
+</div>
+
+  </div>  <div class="status"><div class="status-title">
+  Disbursement
+</div>
+
+<div class="status-text">
+  Your loan will show as disbursed when payment is released.
+</div>
+
+  </div>  <div class="status"><div class="status-title">
+  Rejected
+</div>
+
+<div class="status-text">
+  If the application is rejected, the status and available reason will appear here.
+</div>
+
+  </div>  <div class="note">
+    Keep your tracking number safe. You will use it
+    to check the progress of your loan application.
+  </div>  <a href="index.html" class="home-btn">
+    Back to Home
+  </a></div><script>
+
+const applicationData =
+  sessionStorage.getItem("loanEaseApplication");
+
+
+if(applicationData){
+
+  const application =
+    JSON.parse(applicationData);
+
+
+  /*
+    Temporary tracking number for the page.
+    The backend will generate the official
+    tracking number when we connect MongoDB.
+  */
+
+  let trackingNumber =
+    application.trackingNumber;
+
+
+  if(!trackingNumber){
+
+    const randomNumber =
+      Math.floor(100000 + Math.random() * 900000);
+
+    trackingNumber =
+      "LE-" +
+      new Date().getFullYear() +
+      "-" +
+      randomNumber;
+
+    application.trackingNumber =
+      trackingNumber;
+
+    sessionStorage.setItem(
+      "loanEaseApplication",
+      JSON.stringify(application)
+    );
+
+  }
+
+
+  document.getElementById(
+    "trackingNumber"
+  ).textContent = trackingNumber;
+
+}else{
+
+  document.getElementById(
+    "trackingNumber"
+  ).textContent = "No application found";
+
+}
+
+</script></body>
+</html>
