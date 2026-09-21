@@ -1,3 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LoanEase - Loan Amount</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f4f7fb;
+  color:#222;
+}
+
+.container{
+  max-width:500px;
+  margin:40px auto;
+  padding:25px;
+  background:white;
+  border-radius:14px;
+  box-shadow:0 4px 18px rgba(0,0,0,0.08);
+}
+
+.logo{
+  text-align:center;
+  font-size:32px;
+  font-weight:bold;
+  color:#0057B8;
+}
+
+.logo span{
+  color:#16A34A;
+}
+
+.subtitle{
+  text-align:center;
+  margin-top:8px;
+  color:#666;
+  font-size:14px;
+}
+
+.step{
+  margin:20px 0;
+  padding:10px;
+  background:#eef5ff;
+  color:#0057B8;
+  text-align:center;
+  border-radius:8px;
+  font-weight:bold;
+}
+
+label{
+  display:block;
+  margin-bottom:8px;
+  font-weight:bold;
+}
+
+select{
+  width:100%;
+  padding:13px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:16px;
+  background:white;
+}
+
+.details{
+  margin-top:20px;
+  padding:15px;
+  background:#f8fafc;
+  border-radius:10px;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  padding:12px 0;
+  border-bottom:1px solid #ddd;
+}
+
+.row:last-child{
+  border-bottom:none;
+}
+
+.total{
+  font-weight:bold;
+  color:#0057B8;
+}
+
+.message{
+  display:none;
   margin-top:15px;
   padding:12px;
   border-radius:8px;
@@ -9,87 +106,133 @@
   background:#ffe5e5;
   color:#b00020;
 }
-</style></head><body><div class="container">  <div class="logo">
+
+.success{
+  background:#e5f8ec;
+  color:#087a35;
+}
+
+button{
+  width:100%;
+  margin-top:20px;
+  padding:14px;
+  border:none;
+  border-radius:8px;
+  background:#0057B8;
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#004494;
+}
+
+button:disabled{
+  background:#999;
+  cursor:not-allowed;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="logo">
     Loan<span>Ease</span>
-  </div>  <div class="subtitle">
+  </div>
+
+  <div class="subtitle">
     Select your loan amount and review the repayment
-  </div>  <div class="step">
+  </div>
+
+  <div class="step">
     Step 2 of 2
-  </div>  <form id="loanForm"><label for="amount">
-  Loan Amount (USD)
-</label>
-
-<select id="amount" required>
-
-  <option value="">
-    Select loan amount
-  </option>
-
-  <option value="300">
-    USD 300
-  </option>
-
-  <option value="500">
-    USD 500
-  </option>
-
-  <option value="1000">
-    USD 1,000
-  </option>
-
-  <option value="2000">
-    USD 2,000
-  </option>
-
-  <option value="5000">
-    USD 5,000
-  </option>
-
-  <option value="10000">
-    USD 10,000
-  </option>
-
-  <option value="25000">
-    USD 25,000
-  </option>
-
-  <option value="50000">
-    USD 50,000
-  </option>
-
-</select>
-
-<div class="details">
-
-  <div class="row">
-    <span>Loan Amount</span>
-    <span id="loanAmount">USD 0.00</span>
   </div>
 
-  <div class="row">
-    <span>Interest Rate</span>
-    <span>10%</span>
-  </div>
+  <form id="loanForm">
 
-  <div class="row">
-    <span>Interest Amount</span>
-    <span id="interest">USD 0.00</span>
-  </div>
+    <label for="amount">
+      Loan Amount (USD)
+    </label>
 
-  <div class="row">
-    <span>Total Amount to Return</span>
-    <span id="total" class="total">USD 0.00</span>
-  </div>
+    <select id="amount" required>
+
+      <option value="">
+        Select loan amount
+      </option>
+
+      <option value="300">
+        USD 300
+      </option>
+
+      <option value="500">
+        USD 500
+      </option>
+
+      <option value="1000">
+        USD 1,000
+      </option>
+
+      <option value="2000">
+        USD 2,000
+      </option>
+
+      <option value="5000">
+        USD 5,000
+      </option>
+
+      <option value="10000">
+        USD 10,000
+      </option>
+
+      <option value="25000">
+        USD 25,000
+      </option>
+
+      <option value="50000">
+        USD 50,000
+      </option>
+
+    </select>
+
+    <div class="details">
+
+      <div class="row">
+        <span>Loan Amount</span>
+        <span id="loanAmount">USD 0.00</span>
+      </div>
+
+      <div class="row">
+        <span>Interest Rate</span>
+        <span>10%</span>
+      </div>
+
+      <div class="row">
+        <span>Interest Amount</span>
+        <span id="interest">USD 0.00</span>
+      </div>
+
+      <div class="row">
+        <span>Total Amount to Return</span>
+        <span id="total" class="total">USD 0.00</span>
+      </div>
+
+    </div>
+
+    <div id="message" class="message error"></div>
+
+    <button type="submit" id="submitButton">
+      Submit Application
+    </button>
+
+  </form>
 
 </div>
 
-<div id="message" class="message error"></div>
-
-<button type="submit" id="submitButton">
-  Submit Application
-</button>
-
-  </form></div><script>
+<script>
 
 const applicationData =
   sessionStorage.getItem("loanEaseApplication");
@@ -142,10 +285,41 @@ amountInput.addEventListener("change", function(){
 
   if(!amount){
 
-    loanAmount.textContent = "USD 0.00";
-    interest.textContent = "USD 0.00";
-    total.textContent = "USD 0.00";
-", function(event){
+    loanAmount.textContent =
+      "USD 0.00";
+
+    interest.textContent =
+      "USD 0.00";
+
+    total.textContent =
+      "USD 0.00";
+
+    return;
+  }
+
+  const interestAmount =
+    amount * 0.10;
+
+  const totalAmount =
+    amount + interestAmount;
+
+  loanAmount.textContent =
+    "USD " + amount.toFixed(2);
+
+  interest.textContent =
+    "USD " + interestAmount.toFixed(2);
+
+  total.textContent =
+    "USD " + totalAmount.toFixed(2);
+
+});
+
+
+/*
+  Submit application.
+*/
+
+form.addEventListener("submit", function(event){
 
   event.preventDefault();
 
@@ -154,7 +328,8 @@ amountInput.addEventListener("change", function(){
     message.textContent =
       "Please complete Page 1 first.";
 
-    message.style.display = "block";
+    message.style.display =
+      "block";
 
     return;
   }
@@ -167,7 +342,26 @@ amountInput.addEventListener("change", function(){
     message.textContent =
       "Please select a loan amount.";
 
-    message.style.display = "block";
+    message.style.display =
+      "block";
+
+    return;
+  }
+
+  let application;
+
+  try{
+
+    application =
+      JSON.parse(applicationData);
+
+  }catch(error){
+
+    message.textContent =
+      "Your application information is invalid. Please start again.";
+
+    message.style.display =
+      "block";
 
     return;
   }
@@ -177,10 +371,6 @@ amountInput.addEventListener("change", function(){
 
   const totalAmount =
     amount + interestAmount;
-
-
-  const application =
-    JSON.parse(applicationData);
 
 
   application.loanAmount =
@@ -207,5 +397,7 @@ amountInput.addEventListener("change", function(){
 
 });
 
-</script></body>
+</script>
+
+</body>
 </html>
