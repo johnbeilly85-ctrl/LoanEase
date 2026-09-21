@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LoanEase Admin Dashboard</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f7fb;
+  color: #222;
+}
+
+header {
+  background: #0057B8;
+  color: white;
+  padding: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.logo span {
+  color: #7CFF9B;
+}
+
+.logout {
+  background: white;
+  color: #0057B8;
+  border: none;
+  padding: 9px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.container {
+  width: 95%;
+  max-width: 1200px;
+  margin: 25px auto;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+.search-box {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.search-box input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  font-size: 16px;
+}
+
+.table-container {
+  background: white;
+  border-radius: 10px;
+  overflow-x: auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+th,
+td {
+  padding: 13px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+th {
+  background: #0057B8;
+  color: white;
+}
+
+tr:hover {
+  background: #f8fbff;
+}
+
+.status {
+  padding: 6px 9px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.approved {
+  background: #d4edda;
+  color: #155724;
+}
+
+.rejected {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.disbursement {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+button.view {
+  background: #0057B8;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.message {
+  text-align: center;
+  padding: 25px;
+  color: #666;
+}
+
+@media (max-width: 600px) {
+  header {
+    padding: 14px;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .container {
+    width: 94%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">
+    Loan<span>Ease</span> Admin
+  </div>
+
+  <button class="logout" onclick="logout()">
+    Logout
+  </button>
+</header>
+
+<div class="container">
+
+  <h2>Loan Applications</h2>
+
+  <div class="search-box">
+    <input
+      type="text"
+      id="search"
+      placeholder="Search by tracking number, name or phone..."
+      oninput="filterApplications()"
+    >
+  </div>
+
+  <div class="table-container">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Tracking Number</th>
+          <th>Full Name</th>
+          <th>Phone</th>
+          <th>Loan Amount</th>
+          <th>Purpose</th>
+          <th>Period</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody id="applicationsTable">
+
+        <tr>
+          <td colspan="8" class="message">
+            Loading applications...
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<script>
+
+let applications = [];
+
+async function loadApplications() {
+
+  const table = document.getElementById("applicationsTable");
+
+  try {
+
+    const response = await fetch("/api/applications");
+
+    if (!response.ok) {
+      throw new Error("Failed to load applications");
+    }
+
+    const data = await response.json();
+
+    applications = Array.isArray(data) ? data : data.applications || [];
+
+    displayApplications(applications);
+
+  } catch (error) {
+
+    table.innerHTML = `
+      <tr>
+        <td colspan="8" class="message">
+          Unable to load applications.
+        </td>
+      </tr>
+    `;
+
+    console.error(error);
+  }
+}
+
+
+function displayApplications(list) {
+
+  const table = document.getElementById("applicationsTable");
+
+  if (!list.length) {
+
+    table.innerHTML = `
+      <tr>
+        <td colspan="8" class="message">
+          No applications found.
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  table.innerHTML = "";
+
+  list.forEach(application => {
+
+    const status = application.status || "Pending Review";
+
+    let statusClass = "pending";
+
+    if (status === "Approved") {
+      statusClass = "approved";
+    }
+
+    if (status === "Rejected") {
+      statusClass = "rejected";
+    }
+
+    if (status === "Disbursement") {
+      statusClass = "disbursement";
+    }
+
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+
+      <td>${application.trackingNumber || "-"}</td>
+
+      <td>${application.fullName || "-"}</td>
+
+      <td>${application.phone || "-"}</td>
+
+      <td>
+        USD ${application.amount || "0"}
+      </td>
+
+      <td>${application.loanPurpose || "-"}</td>
+
+      <td>${application.period || "-"}</td>
+
+      <td>
+        <span class="status ${statusClass}">
+          ${status}
+        </span>
+      </td>
+
+      <td>
+        <button
+          class="view"
+          onclick="viewApplication('${application._id}')">
+          View
+        </button>
+      </td>
+
+    `;
+
+    table.appendChild(row);
+
+  });
+}
+
+
+function filterApplications() {
+
+  const search =
+    document.getElementById("search").value.toLowerCase();
+
+  const filtered = applications.filter(application => {
+
+    return (
+
+      (application.trackingNumber || "")
+        .toLowerCase()
+        .includes(search)
+
+      ||
+
+      (application.fullName || "")
+        .toLowerCase()
+        .includes(search)
+
+      ||
+
+      (application.phone || "")
+        .toLowerCase()
+        .includes(search)
+
+    );
+
+  });
+
+  displayApplications(filtered);
+}
+
+
+function viewApplication(id) {
+
+  window.location.href =
+    "/admin.html?id=" + encodeURIComponent(id);
+
+}
+
+
+function logout() {
+
+  window.location.href = "/login.html";
+
+}
+
+
+loadApplications();
+
+</script>
+
+</body>
+</html>
