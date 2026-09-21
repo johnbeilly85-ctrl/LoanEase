@@ -1,0 +1,275 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>LoanEase - Personal Information</title><style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#0057B8,#16A34A);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+.container{
+  width:100%;
+  max-width:500px;
+  background:#fff;
+  border-radius:20px;
+  padding:28px 22px;
+  box-shadow:0 12px 35px rgba(0,0,0,0.22);
+}
+
+.logo{
+  text-align:center;
+  font-size:32px;
+  font-weight:bold;
+  color:#0057B8;
+  margin-bottom:6px;
+}
+
+.logo span{
+  color:#16A34A;
+}
+
+.subtitle{
+  text-align:center;
+  color:#666;
+  font-size:14px;
+  margin-bottom:20px;
+}
+
+.step{
+  text-align:center;
+  color:#0057B8;
+  font-weight:bold;
+  margin-bottom:20px;
+}
+
+label{
+  display:block;
+  margin-top:15px;
+  margin-bottom:7px;
+  font-weight:bold;
+  color:#333;
+}
+
+input,
+select{
+  width:100%;
+  padding:13px;
+  border:1px solid #ccc;
+  border-radius:9px;
+  font-size:16px;
+  outline:none;
+  background:#fff;
+}
+
+input:focus,
+select:focus{
+  border-color:#0057B8;
+}
+
+.pin-note{
+  margin-top:6px;
+  color:#777;
+  font-size:12px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  margin-top:25px;
+  border:none;
+  border-radius:9px;
+  background:#0057B8;
+  color:white;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#004494;
+}
+
+.message{
+  display:none;
+  margin-top:15px;
+  padding:12px;
+  border-radius:8px;
+  background:#ffe5e5;
+  color:#b00020;
+  text-align:center;
+  font-size:14px;
+}
+</style></head><body><div class="container">  <div class="logo">
+    Loan<span>Ease</span>
+  </div>  <div class="subtitle">
+    Enter your personal information
+  </div>  <div class="step">
+    Step 1 of 2
+  </div>  <form id="personalForm"><label for="fullName">Full Name</label>
+<input
+  type="text"
+  id="fullName"
+  placeholder="Enter your full name"
+  autocomplete="name"
+  required
+>
+
+<label for="email">Email Address</label>
+<input
+  type="email"
+  id="email"
+  placeholder="Enter your email address"
+  autocomplete="email"
+  required
+>
+
+<label for="phone">Phone Number</label>
+<input
+  type="tel"
+  id="phone"
+  placeholder="e.g. +254712345678"
+  autocomplete="tel"
+  required
+>
+
+<label for="country">Country</label>
+<select id="country" required>
+  <option value="">Select your country</option>
+  <option value="Kenya">Kenya</option>
+  <option value="Zimbabwe">Zimbabwe</option>
+  <option value="Uganda">Uganda</option>
+  <option value="Tanzania">Tanzania</option>
+  <option value="Rwanda">Rwanda</option>
+  <option value="Ghana">Ghana</option>
+  <option value="Nigeria">Nigeria</option>
+  <option value="South Africa">South Africa</option>
+  <option value="United States">United States</option>
+  <option value="United Kingdom">United Kingdom</option>
+  <option value="Canada">Canada</option>
+  <option value="Other">Other</option>
+</select>
+
+<label for="occupation">Occupation</label>
+<input
+  type="text"
+  id="occupation"
+  placeholder="Enter your occupation"
+  required
+>
+
+<label for="purpose">Purpose of Loan</label>
+<select id="purpose" required>
+  <option value="">Select purpose of loan</option>
+  <option value="School Fees">School Fees</option>
+  <option value="Business">Business</option>
+  <option value="Rent">Rent</option>
+  <option value="Farming">Farming</option>
+  <option value="Personal Use">Personal Use</option>
+  <option value="Others">Others</option>
+</select>
+
+<label for="pin">PIN</label>
+<input
+  type="password"
+  id="pin"
+  placeholder="Enter your PIN"
+  inputmode="numeric"
+  maxlength="6"
+  autocomplete="new-password"
+  required
+>
+
+<div class="pin-note">
+  Your PIN is masked for privacy.
+</div>
+
+<div id="message" class="message"></div>
+
+<button type="submit">
+  Next
+</button>
+
+  </form></div><script>
+
+const form = document.getElementById("personalForm");
+const message = document.getElementById("message");
+
+form.addEventListener("submit", function(event){
+
+  event.preventDefault();
+
+  const fullName =
+    document.getElementById("fullName").value.trim();
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const phone =
+    document.getElementById("phone").value.trim();
+
+  const country =
+    document.getElementById("country").value;
+
+  const occupation =
+    document.getElementById("occupation").value.trim();
+
+  const purpose =
+    document.getElementById("purpose").value;
+
+  const pin =
+    document.getElementById("pin").value.trim();
+
+  if(
+    !fullName ||
+    !email ||
+    !phone ||
+    !country ||
+    !occupation ||
+    !purpose ||
+    !pin
+  ){
+    message.textContent = "Please complete all fields.";
+    message.style.display = "block";
+    return;
+  }
+
+  if(!/^\d{4,6}$/.test(pin)){
+    message.textContent =
+      "PIN must contain 4 to 6 digits.";
+
+    message.style.display = "block";
+    return;
+  }
+
+  const application = {
+    fullName: fullName,
+    email: email,
+    phone: phone,
+    country: country,
+    occupation: occupation,
+    purpose: purpose,
+    pin: pin
+  };
+
+  sessionStorage.setItem(
+    "loanEaseApplication",
+    JSON.stringify(application)
+  );
+
+  window.location.href = "loan.html";
+
+});
+
+</script></body>
+</html>
