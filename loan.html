@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>LoanEase - Loan Amount</title>
-
-<style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>LoanEase - Loan Amount</title><style>
 *{
   box-sizing:border-box;
 }
@@ -133,106 +128,59 @@ button:disabled{
   background:#999;
   cursor:not-allowed;
 }
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-  <div class="logo">
+</style></head><body><div class="container">  <div class="logo">
     Loan<span>Ease</span>
-  </div>
-
-  <div class="subtitle">
+  </div>  <div class="subtitle">
     Select your loan amount and review the repayment
-  </div>
-
-  <div class="step">
+  </div>  <div class="step">
     Step 2 of 2
+  </div>  <form id="loanForm"><label for="amount">
+  Loan Amount (USD)
+</label>
+
+<select id="amount" required>
+
+  <option value="">
+    Select loan amount
+  </option>
+
+  <option value="300">USD 300</option>
+  <option value="500">USD 500</option>
+  <option value="1000">USD 1,000</option>
+  <option value="2000">USD 2,000</option>
+  <option value="5000">USD 5,000</option>
+  <option value="10000">USD 10,000</option>
+  <option value="25000">USD 25,000</option>
+  <option value="50000">USD 50,000</option>
+
+</select>
+
+<div class="details">
+
+  <div class="row">
+    <span>Loan Amount</span>
+    <span id="loanAmount">USD 0.00</span>
   </div>
 
-  <form id="loanForm">
+  <div class="row">
+    <span>Processing Fee (10%)</span>
+    <span id="processingFee">USD 0.00</span>
+  </div>
 
-    <label for="amount">
-      Loan Amount (USD)
-    </label>
-
-    <select id="amount" required>
-
-      <option value="">
-        Select loan amount
-      </option>
-
-      <option value="300">
-        USD 300
-      </option>
-
-      <option value="500">
-        USD 500
-      </option>
-
-      <option value="1000">
-        USD 1,000
-      </option>
-
-      <option value="2000">
-        USD 2,000
-      </option>
-
-      <option value="5000">
-        USD 5,000
-      </option>
-
-      <option value="10000">
-        USD 10,000
-      </option>
-
-      <option value="25000">
-        USD 25,000
-      </option>
-
-      <option value="50000">
-        USD 50,000
-      </option>
-
-    </select>
-
-    <div class="details">
-
-      <div class="row">
-        <span>Loan Amount</span>
-        <span id="loanAmount">USD 0.00</span>
-      </div>
-
-      <div class="row">
-        <span>Interest Rate</span>
-        <span>10%</span>
-      </div>
-
-      <div class="row">
-        <span>Interest Amount</span>
-        <span id="interest">USD 0.00</span>
-      </div>
-
-      <div class="row">
-        <span>Total Amount to Return</span>
-        <span id="total" class="total">USD 0.00</span>
-      </div>
-
-    </div>
-
-    <div id="message" class="message error"></div>
-
-    <button type="submit" id="submitButton">
-      Submit Application
-    </button>
-
-  </form>
+  <div class="row">
+    <span>Total Amount Due</span>
+    <span id="total" class="total">USD 0.00</span>
+  </div>
 
 </div>
 
-<script>
+<div id="message" class="message"></div>
+
+<button type="submit" id="submitButton">
+  Submit Application
+</button>
+
+  </form></div><script>
 
 const applicationData =
   sessionStorage.getItem("loanEaseApplication");
@@ -243,8 +191,8 @@ const amountInput =
 const loanAmount =
   document.getElementById("loanAmount");
 
-const interest =
-  document.getElementById("interest");
+const processingFee =
+  document.getElementById("processingFee");
 
 const total =
   document.getElementById("total");
@@ -259,24 +207,20 @@ const submitButton =
   document.getElementById("submitButton");
 
 
-/*
-  Make sure the applicant completed Page 1.
-*/
-
 if(!applicationData){
 
   message.textContent =
     "Please complete your personal information first.";
 
-  message.style.display = "block";
+  message.className =
+    "message error";
+
+  message.style.display =
+    "block";
 
   submitButton.disabled = true;
 }
 
-
-/*
-  Calculate the 10% interest.
-*/
 
 amountInput.addEventListener("change", function(){
 
@@ -288,7 +232,7 @@ amountInput.addEventListener("change", function(){
     loanAmount.textContent =
       "USD 0.00";
 
-    interest.textContent =
+    processingFee.textContent =
       "USD 0.00";
 
     total.textContent =
@@ -297,36 +241,35 @@ amountInput.addEventListener("change", function(){
     return;
   }
 
-  const interestAmount =
+  const fee =
     amount * 0.10;
 
-  const totalAmount =
-    amount + interestAmount;
+  const totalDue =
+    amount + fee;
 
   loanAmount.textContent =
     "USD " + amount.toFixed(2);
 
-  interest.textContent =
-    "USD " + interestAmount.toFixed(2);
+  processingFee.textContent =
+    "USD " + fee.toFixed(2);
 
   total.textContent =
-    "USD " + totalAmount.toFixed(2);
+    "USD " + totalDue.toFixed(2);
 
 });
 
 
-/*
-  Submit application.
-*/
-
-form.addEventListener("submit", function(event){
+form.addEventListener("submit", async function(event){
 
   event.preventDefault();
 
   if(!applicationData){
 
     message.textContent =
-      "Please complete Page 1 first.";
+      "Please complete your personal information first.";
+
+    message.className =
+      "message error";
 
     message.style.display =
       "block";
@@ -341,6 +284,9 @@ form.addEventListener("submit", function(event){
 
     message.textContent =
       "Please select a loan amount.";
+
+    message.className =
+      "message error";
 
     message.style.display =
       "block";
@@ -360,44 +306,160 @@ form.addEventListener("submit", function(event){
     message.textContent =
       "Your application information is invalid. Please start again.";
 
+    message.className =
+      "message error";
+
     message.style.display =
       "block";
 
     return;
   }
 
-  const interestAmount =
+
+  const fee =
     amount * 0.10;
 
-  const totalAmount =
-    amount + interestAmount;
+  const totalDue =
+    amount + fee;
 
 
-  application.loanAmount =
-    amount;
+  const finalApplication = {
 
-  application.interestRate =
-    10;
+    fullName:
+      application.fullName || "",
 
-  application.interestAmount =
-    interestAmount;
+    email:
+      application.email || "",
 
-  application.totalAmount =
-    totalAmount;
+    phone:
+      application.phone || "",
+
+    country:
+      application.country || "",
+
+    occupation:
+      application.occupation || "",
+
+    purpose:
+      application.purpose || "",
+
+    pin:
+      application.pin || "",
+
+    amount:
+      amount,
+
+    loanAmount:
+      amount,
+
+    processingFee:
+      fee,
+
+    totalAmountDue:
+      totalDue,
+
+    interestRate:
+      10,
+
+    interestAmount:
+      fee
+  };
 
 
-  sessionStorage.setItem(
-    "loanEaseApplication",
-    JSON.stringify(application)
-  );
+  submitButton.disabled = true;
+
+  submitButton.textContent =
+    "Submitting...";
+
+  message.style.display =
+    "none";
 
 
-  window.location.href =
-    "success.html";
+  try{
+
+    const response =
+      await fetch("/api/apply", {
+
+        method:"POST",
+
+        headers:{
+          "Content-Type":"application/json"
+        },
+
+        body:
+          JSON.stringify(finalApplication)
+
+      });
+
+
+    const result =
+      await response.json();
+
+
+    if(!response.ok){
+
+      throw new Error(
+        result.message ||
+        "Application could not be submitted."
+      );
+
+    }
+
+
+    sessionStorage.setItem(
+      "loanEaseApplication",
+      JSON.stringify(finalApplication)
+    );
+
+
+    /*
+      Only redirect after the server
+      confirms that the application
+      was successfully saved.
+    */
+
+    if(result.trackingNumber){
+
+      sessionStorage.setItem(
+        "loanTrackingNumber",
+        result.trackingNumber
+      );
+
+    }
+
+
+    window.location.href =
+      "success.html";
+
+
+  }catch(error){
+
+    console.error(
+      "Application submission error:",
+      error
+    );
+
+
+    message.textContent =
+      error.message ||
+      "Unable to submit application. Please try again.";
+
+    message.className =
+      "message error";
+
+    message.style.display =
+      "block";
+
+
+    submitButton.disabled =
+      false;
+
+    submitButton.textContent =
+      "Submit Application";
+
+  }
 
 });
 
-</script>
-
-</body>
+</script></body>
 </html>
